@@ -49,7 +49,7 @@ const HeroSection = () => {
 
             <div className="flex gap-4">
               <a
-                href="#"
+                href="https://www.instagram.com/zyra_systems?igsh=M2U5cmpkNWk2ZnZo"
                 className="w-16 h-16 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center hover:bg-white/10 transition-colors group"
               >
                 <InstagramIcon
