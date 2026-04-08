@@ -1,5 +1,5 @@
 import { BarChart3, Cpu, Droplets } from 'lucide-react';
-import FeatureCard from "../../components/featurecard"
+import FeatureCard from "../components/featurecard"
 
 const FeaturesSection = () => {
   return (
