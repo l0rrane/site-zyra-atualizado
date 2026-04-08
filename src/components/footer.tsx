@@ -1,4 +1,4 @@
-import { InstagramIcon, TikTokIcon } from '../socialicons';
+import { InstagramIcon, TikTokIcon } from './socialicons';
 
 const Footer = () => {
   return (

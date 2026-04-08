@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import { ArrowRight, Database, Wifi } from 'lucide-react';
-import { InstagramIcon, TikTokIcon } from "../../components/socialicons";
+import { InstagramIcon, TikTokIcon } from "../components/socialicons";
 
 const HeroSection = () => {
   return (
