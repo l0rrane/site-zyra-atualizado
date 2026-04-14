@@ -1,5 +1,6 @@
 import { Mail, Lock, LogIn } from "lucide-react";
 import { useState } from "react";
+import { Link } from "react-router-dom";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -21,7 +22,7 @@ const Login = () => {
       className="min-h-screen flex items-center justify-center p-6 bg-gradient-to-br from-black via-gray-900 to-black"
     >
       <div className="w-full max-w-md bg-white/5 border border-white/10 backdrop-blur-sm rounded-[2rem] p-8 shadow-2xl">
-        
+
         {/* TÍTULO */}
         <h2 className="text-3xl md:text-4xl font-black italic text-center mb-6">
           ACESSAR <br />
@@ -80,9 +81,12 @@ const Login = () => {
           <span className="text-center text-xs text-gray-500 mt-2 hover:text-purple-400 cursor-pointer transition">
             Esqueci minha senha
           </span>
-          <span className="text-center text-xs text-gray-500 mt-2 hover:text-purple-400 cursor-pointer transition">
+          <Link
+            to="/cadastro"
+            className="text-center text-xs text-gray-500 mt-2 hover:text-purple-400 cursor-pointer transition"
+          >
             Cadastrar-se
-          </span>
+          </Link>
         </form>
       </div>
     </section>
