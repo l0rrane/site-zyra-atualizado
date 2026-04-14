@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 import { ArrowRight, Database, Wifi } from 'lucide-react';
 import { InstagramIcon, TikTokIcon } from "../components/socialicons";
+import { Link } from "react-router-dom";
 
 const HeroSection = () => {
   return (
@@ -38,13 +39,15 @@ const HeroSection = () => {
           <div className="flex flex-col sm:flex-row gap-6 mb-12">
             <button className="group relative px-10 py-5 bg-white text-black font-black rounded-2xl overflow-hidden transition-all hover:scale-105 active:scale-95">
               <div className="absolute inset-0 bg-gradient-to-r from-cyan-400 to-purple-500 opacity-0 group-hover:opacity-100 transition-opacity" />
-              <span className="relative z-10 flex items-center justify-center gap-3 group-hover:text-white transition-colors uppercase italic tracking-tighter">
-                Acessar Plataforma{' '}
-                <ArrowRight
-                  size={20}
-                  className="group-hover:translate-x-1 transition-transform"
-                />
-              </span>
+             <Link to="/login"className="group">
+  <span className="relative z-10 flex items-center justify-center gap-3 group-hover:text-white transition-colors uppercase italic tracking-tighter">
+    Acessar Plataforma{' '}
+    <ArrowRight
+      size={20}
+      className="group-hover:translate-x-1 transition-transform"
+    />
+  </span>
+</Link>
             </button>
 
             <div className="flex gap-4">
@@ -130,7 +133,7 @@ const HeroSection = () => {
                   <img
                     src="/Zyro.jpeg"
                     alt="Mascote"
-                    className="w-40 md:w-90 object-contain mx-auto group-hover:scale-110 transition-transform duration-500"
+                    className="w-120 md:w-90 object-contain mx-auto group-hover:scale-110 transition-transform duration-500"
                   />
 
                   <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 flex gap-2">

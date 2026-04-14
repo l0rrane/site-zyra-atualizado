@@ -1,4 +1,5 @@
 import { ExternalLink, ShieldCheck, Zap } from 'lucide-react';
+import { Link } from "react-router-dom";
 
 const AppSection = () => {
   return (
@@ -39,9 +40,9 @@ const AppSection = () => {
                 </div>
               </div>
 
-              <button className="bg-white text-black px-10 py-5 rounded-2xl font-black flex items-center gap-3 hover:bg-cyan-400 transition-colors uppercase tracking-tighter">
-                Acessar Painel de Controle <ExternalLink size={20} />
-              </button>
+             <Link to="/login" className="bg-white text-black px-25 py-5 rounded-2xl font-black flex items-center gap-3 hover:bg-cyan-400 transition-colors uppercase tracking-tighter">
+  Acessar Painel de Controle <ExternalLink size={20} />
+</Link>
             </div>
 
             <div className="relative">

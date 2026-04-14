@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { ExternalLink, Menu, X } from 'lucide-react';
+import { Link } from "react-router-dom";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -60,10 +61,10 @@ const Navbar = () => {
             Equipe
           </a>
           
-
-          <button className="bg-gradient-to-r from-cyan-500 to-purple-600 text-white px-6 py-2 rounded-full font-bold hover:scale-105 transition-all flex items-center gap-2">
-            ACESSAR SISTEMA <ExternalLink size={16} />
-          </button>
+      
+         <Link to="/login" className="bg-gradient-to-r from-cyan-500 to-purple-600 text-white px-6 py-2 rounded-full font-bold hover:scale-105 transition-all flex items-center gap-2">
+  ACESSAR SISTEMA <ExternalLink size={16} />
+</Link>
         </div>
 
         <button
@@ -112,9 +113,9 @@ const Navbar = () => {
                 Equipe
               </a>
 
-              <button className="bg-gradient-to-r from-cyan-500 to-purple-600 text-white px-6 py-4 rounded-xl font-bold uppercase">
-                Acessar Sistema
-              </button>
+             <Link to="/login" onClick={() => setIsOpen(false)} className="bg-gradient-to-r from-cyan-500 to-purple-600 text-white px-6 py-4 rounded-xl font-bold uppercase text-center">
+  Acessar Sistema
+</Link>
             </div>
           </motion.div>
         )}

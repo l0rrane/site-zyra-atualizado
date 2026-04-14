@@ -1,5 +1,8 @@
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+
 import Navbar from "./components/navbar";
 import Footer from "./components/footer";
+
 import HeroSection from "./sections/herosections";
 import StatsSection from "./sections/statssection";
 import FeaturesSection from "./sections/featuressection";
@@ -7,9 +10,12 @@ import AppSection from "./sections/appsection";
 import AboutSection from "./sections/aboutsection";
 import TeamSection from "./sections/teamsection";
 
-function App() {
+import Login from "./pages/login";
+
+// Home
+function Home() {
   return (
-    <div className="min-h-screen bg-[#020202] text-white selection:bg-cyan-500/30 font-sans">
+    <>
       <Navbar />
       <HeroSection />
       <StatsSection />
@@ -18,6 +24,22 @@ function App() {
       <AboutSection />
       <TeamSection />
       <Footer />
+    </>
+  );
+}
+
+
+
+//paginas com rota
+function App() {
+  return (
+    <div className="min-h-screen bg-[#020202] text-white font-sans">
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/login" element={<Login />} />
+        </Routes>
+      </BrowserRouter>
     </div>
   );
 }
