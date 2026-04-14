@@ -11,6 +11,7 @@ import AboutSection from "./sections/aboutsection";
 import TeamSection from "./sections/teamsection";
 
 import Login from "./pages/login";
+import Cadastro from "./pages/cadastro";
 
 // Home
 function Home() {
@@ -38,6 +39,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/cadastro" element={<Cadastro />} />
         </Routes>
       </BrowserRouter>
     </div>
