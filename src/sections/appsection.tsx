@@ -1,4 +1,4 @@
-import { ExternalLink, ShieldCheck, Zap } from 'lucide-react';
+import { ArrowRight, ExternalLink, ShieldCheck, Zap } from 'lucide-react';
 import { Link } from "react-router-dom";
 
 const AppSection = () => {
@@ -40,9 +40,14 @@ const AppSection = () => {
                 </div>
               </div>
 
-             <Link to="/login" className="bg-white text-black px-25 py-5 rounded-2xl font-black flex items-center gap-3 hover:bg-cyan-400 transition-colors uppercase tracking-tighter">
-  Acessar Painel de Controle <ExternalLink size={20} />
-</Link>
+             <Link to="/login"
+             className="bg-gradient-to-r from-cyan-500 to-purple-600 text-white px-6 py-3 rounded-full font-bold hover:scale-105 transition-all flex items-center justify-center gap-2 group">
+              Acessar Plataforma
+              <ArrowRight
+              size={20}
+              className="group-hover:translate-x-1 transition-transform" />
+              </Link>
+              
             </div>
 
             <div className="relative">
