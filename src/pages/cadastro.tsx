@@ -1,6 +1,16 @@
 import { useMemo, useState } from "react";
 import { motion } from "framer-motion";
-import { CreditCard, FileText, MapPin, Phone, User, Mail, LockIcon } from "lucide-react";
+import {
+  CreditCard,
+  FileText,
+  MapPin,
+  Phone,
+  User,
+  Mail,
+  LockIcon,
+  Home,
+  Building2,
+} from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 type Plano = "mensal" | "semestral" | "anual";
@@ -11,11 +21,18 @@ interface FormData {
   senha: string;
   email: string;
   telefone: string;
-  endereco: string;
   cpf: string;
   tipoPlano: Plano;
   formaPagamento: FormaPagamento;
   quantidadeParcelas: number;
+
+  cep: string;
+  logradouro: string;
+  numero: string;
+  bairro: string;
+  cidade: string;
+  estado: string;
+  complemento: string;
 }
 
 interface ApiResponse {
@@ -28,17 +45,20 @@ const initialFormData: FormData = {
   senha: "",
   email: "",
   telefone: "",
-  endereco: "",
   cpf: "",
   tipoPlano: "mensal",
   formaPagamento: "pix",
   quantidadeParcelas: 1,
+
+  cep: "",
+  logradouro: "",
+  numero: "",
+  bairro: "",
+  cidade: "",
+  estado: "",
+  complemento: "",
 };
 
-/**
- * Função temporária simulando a API.
- * Depois você pode trocar pelo fetch/axios sem mexer no resto do componente.
- */
 const registerClient = async (payload: FormData): Promise<ApiResponse> => {
   console.log("Payload enviado para API:", payload);
 
@@ -50,31 +70,12 @@ const registerClient = async (payload: FormData): Promise<ApiResponse> => {
   };
 };
 
-/**
- Depois com a API deve ficar assim:
-
- const cadastro = async (payload: FormData): Promise<ApiResponse> => {
-   const response = await fetch("http://localhost:3000/cadastros", {
-     method: "POST",
-     headers: {
-       "Content-Type": "application/json",
-     },
-     body: JSON.stringify(payload),
-   });
-
-   if (!response.ok) {
-     throw new Error("Erro ao enviar cadastro.");
-   }
-
-   return response.json();
- };
-*/
-
 const Cadastro = () => {
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState<FormData>(initialFormData);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isFetchingCep, setIsFetchingCep] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
 
@@ -97,18 +98,125 @@ const Cadastro = () => {
     return [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
   }, [formData.formaPagamento, formData.tipoPlano]);
 
-  const handleChange = (
+  const formatCep = (value: string) => {
+    const digits = value.replace(/\D/g, "").slice(0, 8);
+    return digits.replace(/^(\d{5})(\d{0,3})$/, "$1-$2");
+  };
+
+  const formatCpf = (value: string) => {
+    const digits = value.replace(/\D/g, "").slice(0, 11);
+    return digits
+      .replace(/^(\d{3})(\d)/, "$1.$2")
+      .replace(/^(\d{3})\.(\d{3})(\d)/, "$1.$2.$3")
+      .replace(/\.(\d{3})(\d)/, ".$1-$2");
+  };
+
+  const formatTelefone = (value: string) => {
+    const digits = value.replace(/\D/g, "").slice(0, 11);
+
+    if (digits.length <= 10) {
+      return digits
+        .replace(/^(\d{2})(\d)/, "($1) $2")
+        .replace(/(\d{4})(\d)/, "$1-$2");
+    }
+
+    return digits
+      .replace(/^(\d{2})(\d)/, "($1) $2")
+      .replace(/(\d{5})(\d)/, "$1-$2");
+  };
+
+  const validarSenha = (senha: string) => {
+    const regex =
+      /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&()[\]{}\-_=+;:,.<>/?\\|#])[A-Za-z\d@$!%*?&()[\]{}\-_=+;:,.<>/?\\|#]{8,20}$/;
+
+    return regex.test(senha);
+  };
+
+  const senhaMinimo = formData.senha.length >= 8;
+  const senhaMaximo = formData.senha.length <= 20;
+  const senhaMaiuscula = /[A-Z]/.test(formData.senha);
+  const senhaNumero = /\d/.test(formData.senha);
+  const senhaEspecial = /[@$!%*?&()[\]{}\-_=+;:,.<>/?\\|#]/.test(
+    formData.senha
+  );
+  const senhaValida = validarSenha(formData.senha);
+
+  const buscarCep = async (cep: string) => {
+    const cepLimpo = cep.replace(/\D/g, "");
+
+    if (cepLimpo.length !== 8) return;
+
+    setIsFetchingCep(true);
+
+    try {
+      const response = await fetch(`https://viacep.com.br/ws/${cepLimpo}/json/`);
+
+      if (!response.ok) {
+        throw new Error("Não foi possível consultar o CEP.");
+      }
+
+      const data = await response.json();
+
+      if (data.erro) {
+        throw new Error("CEP não encontrado.");
+      }
+
+      setFormData((prev) => ({
+        ...prev,
+        cep: formatCep(cep),
+        logradouro: data.logradouro || "",
+        bairro: data.bairro || "",
+        cidade: data.localidade || "",
+        estado: data.uf || "",
+      }));
+
+      setErrorMessage("");
+    } catch (error) {
+      const message =
+        error instanceof Error ? error.message : "Erro ao buscar CEP.";
+      setErrorMessage(message);
+    } finally {
+      setIsFetchingCep(false);
+    }
+  };
+
+  const handleChange = async (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
 
+    let formattedValue: string | number = value;
+
+    if (name === "quantidadeParcelas") {
+      formattedValue = Number(value);
+    }
+
+    if (name === "cep") {
+      formattedValue = formatCep(value);
+    }
+
+    if (name === "cpf") {
+      formattedValue = formatCpf(value);
+    }
+
+    if (name === "telefone") {
+      formattedValue = formatTelefone(value);
+    }
+
     setFormData((prev) => ({
       ...prev,
-      [name]: name === "quantidadeParcelas" ? Number(value) : value,
+      [name]: formattedValue,
     }));
 
     if (successMessage) setSuccessMessage("");
     if (errorMessage) setErrorMessage("");
+
+    if (name === "cep") {
+      const cepLimpo = String(formattedValue).replace(/\D/g, "");
+      if (cepLimpo.length === 8) {
+        await buscarCep(String(formattedValue));
+      }
+    }
   };
 
   const handleFormaPagamentoChange = (
@@ -149,6 +257,14 @@ const Cadastro = () => {
     setSuccessMessage("");
     setErrorMessage("");
 
+    if (!senhaValida) {
+      setErrorMessage(
+        "A senha deve ter entre 8 e 20 caracteres, com pelo menos 1 letra maiúscula, 1 número e 1 caractere especial."
+      );
+      setIsSubmitting(false);
+      return;
+    }
+
     try {
       const response = await registerClient(formData);
 
@@ -156,7 +272,9 @@ const Cadastro = () => {
         throw new Error(response.message || "Falha ao enviar cadastro.");
       }
 
-      setSuccessMessage("Cadastro realizado com sucesso! Redirecionando para login...");
+      setSuccessMessage(
+        "Cadastro realizado com sucesso! Redirecionando para login..."
+      );
       setFormData(initialFormData);
 
       setTimeout(() => {
@@ -173,6 +291,9 @@ const Cadastro = () => {
       setIsSubmitting(false);
     }
   };
+
+  const getPasswordRuleClass = (isValid: boolean) =>
+    isValid ? "text-green-400" : "text-gray-400";
 
   return (
     <section className="relative min-h-screen pt-32 pb-20 overflow-hidden bg-black text-white">
@@ -196,7 +317,6 @@ const Cadastro = () => {
             Preencha suas informações para escolher seu plano, definir a forma
             de pagamento e concluir seu cadastro de forma rápida e simples.
           </p>
-
         </motion.div>
 
         <motion.div
@@ -206,9 +326,14 @@ const Cadastro = () => {
           className="lg:col-span-7"
         >
           <div className="rounded-[2rem] border border-white/10 bg-white/5 backdrop-blur-xl p-6 md:p-8 shadow-2xl">
-            <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <form
+              onSubmit={handleSubmit}
+              className="grid grid-cols-1 md:grid-cols-2 gap-5"
+            >
               <div className="md:col-span-2">
-                <label className="text-sm text-gray-300 mb-2 block">Nome completo</label>
+                <label className="text-sm text-gray-300 mb-2 block">
+                  Nome completo
+                </label>
                 <div className="flex items-center gap-3 rounded-xl border border-white/10 bg-black/30 px-4">
                   <User size={18} className="text-cyan-400" />
                   <input
@@ -228,14 +353,34 @@ const Cadastro = () => {
                 <div className="flex items-center gap-3 rounded-xl border border-white/10 bg-black/30 px-4">
                   <LockIcon size={18} className="text-cyan-400" />
                   <input
-                    type="text"
+                    type="password"
                     name="senha"
                     value={formData.senha}
                     onChange={handleChange}
                     placeholder="Digite sua senha"
+                    minLength={8}
+                    maxLength={20}
                     className="w-full bg-transparent py-4 outline-none text-white placeholder:text-gray-500"
                     required
                   />
+                </div>
+
+                <div className="mt-3 space-y-1 text-xs">
+                  <p className={getPasswordRuleClass(senhaMinimo)}>
+                    • Mínimo de 8 caracteres
+                  </p>
+                  <p className={getPasswordRuleClass(senhaMaximo)}>
+                    • Máximo de 20 caracteres
+                  </p>
+                  <p className={getPasswordRuleClass(senhaMaiuscula)}>
+                    • Pelo menos 1 letra maiúscula
+                  </p>
+                  <p className={getPasswordRuleClass(senhaNumero)}>
+                    • Pelo menos 1 número
+                  </p>
+                  <p className={getPasswordRuleClass(senhaEspecial)}>
+                    • Pelo menos 1 caractere especial
+                  </p>
                 </div>
               </div>
 
@@ -256,7 +401,9 @@ const Cadastro = () => {
               </div>
 
               <div>
-                <label className="text-sm text-gray-300 mb-2 block">Telefone</label>
+                <label className="text-sm text-gray-300 mb-2 block">
+                  Telefone
+                </label>
                 <div className="flex items-center gap-3 rounded-xl border border-white/10 bg-black/30 px-4">
                   <Phone size={18} className="text-green-400" />
                   <input
@@ -265,22 +412,6 @@ const Cadastro = () => {
                     value={formData.telefone}
                     onChange={handleChange}
                     placeholder="(11) 99999-9999"
-                    className="w-full bg-transparent py-4 outline-none text-white placeholder:text-gray-500"
-                    required
-                  />
-                </div>
-              </div>
-
-              <div className="md:col-span-2">
-                <label className="text-sm text-gray-300 mb-2 block">Endereço</label>
-                <div className="flex items-center gap-3 rounded-xl border border-white/10 bg-black/30 px-4">
-                  <MapPin size={18} className="text-cyan-400" />
-                  <input
-                    type="text"
-                    name="endereco"
-                    value={formData.endereco}
-                    onChange={handleChange}
-                    placeholder="Rua, número, bairro, cidade"
                     className="w-full bg-transparent py-4 outline-none text-white placeholder:text-gray-500"
                     required
                   />
@@ -304,7 +435,138 @@ const Cadastro = () => {
               </div>
 
               <div>
-                <label className="text-sm text-gray-300 mb-2 block">Tipo de plano</label>
+                <label className="text-sm text-gray-300 mb-2 block">CEP</label>
+                <div className="flex items-center gap-3 rounded-xl border border-white/10 bg-black/30 px-4">
+                  <MapPin size={18} className="text-cyan-400" />
+                  <input
+                    type="text"
+                    name="cep"
+                    value={formData.cep}
+                    onChange={handleChange}
+                    placeholder="00000-000"
+                    className="w-full bg-transparent py-4 outline-none text-white placeholder:text-gray-500"
+                    required
+                  />
+                </div>
+                {isFetchingCep && (
+                  <p className="text-xs text-cyan-300 mt-2">
+                    Buscando endereço pelo CEP...
+                  </p>
+                )}
+              </div>
+
+              <div className="md:col-span-2">
+                <label className="text-sm text-gray-300 mb-2 block">
+                  Rua / Logradouro
+                </label>
+                <div className="flex items-center gap-3 rounded-xl border border-white/10 bg-black/30 px-4">
+                  <MapPin size={18} className="text-cyan-400" />
+                  <input
+                    type="text"
+                    name="logradouro"
+                    value={formData.logradouro}
+                    onChange={handleChange}
+                    placeholder="Rua, avenida, travessa..."
+                    className="w-full bg-transparent py-4 outline-none text-white placeholder:text-gray-500"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="text-sm text-gray-300 mb-2 block">
+                  Número
+                </label>
+                <div className="flex items-center gap-3 rounded-xl border border-white/10 bg-black/30 px-4">
+                  <Home size={18} className="text-green-400" />
+                  <input
+                    type="text"
+                    name="numero"
+                    value={formData.numero}
+                    onChange={handleChange}
+                    placeholder="Número da residência"
+                    className="w-full bg-transparent py-4 outline-none text-white placeholder:text-gray-500"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="text-sm text-gray-300 mb-2 block">
+                  Bairro
+                </label>
+                <div className="flex items-center gap-3 rounded-xl border border-white/10 bg-black/30 px-4">
+                  <Building2 size={18} className="text-purple-400" />
+                  <input
+                    type="text"
+                    name="bairro"
+                    value={formData.bairro}
+                    onChange={handleChange}
+                    placeholder="Digite o bairro"
+                    className="w-full bg-transparent py-4 outline-none text-white placeholder:text-gray-500"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="text-sm text-gray-300 mb-2 block">
+                  Cidade
+                </label>
+                <div className="flex items-center gap-3 rounded-xl border border-white/10 bg-black/30 px-4">
+                  <MapPin size={18} className="text-cyan-400" />
+                  <input
+                    type="text"
+                    name="cidade"
+                    value={formData.cidade}
+                    onChange={handleChange}
+                    placeholder="Digite a cidade"
+                    className="w-full bg-transparent py-4 outline-none text-white placeholder:text-gray-500"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="text-sm text-gray-300 mb-2 block">
+                  Estado
+                </label>
+                <div className="flex items-center gap-3 rounded-xl border border-white/10 bg-black/30 px-4">
+                  <MapPin size={18} className="text-cyan-400" />
+                  <input
+                    type="text"
+                    name="estado"
+                    value={formData.estado}
+                    onChange={handleChange}
+                    placeholder="UF"
+                    className="w-full bg-transparent py-4 outline-none text-white placeholder:text-gray-500"
+                    maxLength={2}
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className="md:col-span-2">
+                <label className="text-sm text-gray-300 mb-2 block">
+                  Complemento
+                </label>
+                <div className="flex items-center gap-3 rounded-xl border border-white/10 bg-black/30 px-4">
+                  <MapPin size={18} className="text-cyan-400" />
+                  <input
+                    type="text"
+                    name="complemento"
+                    value={formData.complemento}
+                    onChange={handleChange}
+                    placeholder="Apartamento, bloco, referência..."
+                    className="w-full bg-transparent py-4 outline-none text-white placeholder:text-gray-500"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="text-sm text-gray-300 mb-2 block">
+                  Tipo de plano
+                </label>
                 <select
                   name="tipoPlano"
                   value={formData.tipoPlano}
@@ -318,25 +580,43 @@ const Cadastro = () => {
               </div>
 
               <div>
-                <label className="text-sm text-gray-300 mb-2 block">Forma de pagamento</label>
+                <label className="text-sm text-gray-300 mb-2 block">
+                  Forma de pagamento
+                </label>
                 <div className="flex items-center gap-3 rounded-xl border border-white/10 bg-black/30 px-4">
                   <CreditCard size={18} className="text-green-400" />
                   <select
                     name="formaPagamento"
                     value={formData.formaPagamento}
                     onChange={handleFormaPagamentoChange}
-                    className="w-full  py-4 outline-none text-white"
+                    className="w-full py-4 outline-none text-white bg-transparent"
                   >
-                    <option value="pix">Pix</option>
-                    <option value="cartao_debito">Cartão de débito</option>
-                    <option value="cartao_credito">Cartão de crédito</option>
-                    <option value="boleto">Boleto</option>
+                    <option value="pix" className="bg-black text-white">
+                      Pix
+                    </option>
+                    <option
+                      value="cartao_debito"
+                      className="bg-black text-white"
+                    >
+                      Cartão de débito
+                    </option>
+                    <option
+                      value="cartao_credito"
+                      className="bg-black text-white"
+                    >
+                      Cartão de crédito
+                    </option>
+                    <option value="boleto" className="bg-black text-white">
+                      Boleto
+                    </option>
                   </select>
                 </div>
               </div>
 
               <div>
-                <label className="text-sm text-gray-300 mb-2 block">Quantidade de parcelas</label>
+                <label className="text-sm text-gray-300 mb-2 block">
+                  Quantidade de parcelas
+                </label>
                 <select
                   name="quantidadeParcelas"
                   value={formData.quantidadeParcelas}
@@ -344,7 +624,11 @@ const Cadastro = () => {
                   className="w-full rounded-xl border border-white/10 bg-black/30 px-4 py-4 outline-none text-white"
                 >
                   {parcelasDisponiveis.map((parcela) => (
-                    <option key={parcela} value={parcela}>
+                    <option
+                      key={parcela}
+                      value={parcela}
+                      className="bg-black text-white"
+                    >
                       {parcela}x
                     </option>
                   ))}
@@ -370,7 +654,7 @@ const Cadastro = () => {
               <div className="md:col-span-2 pt-2">
                 <button
                   type="submit"
-                  disabled={isSubmitting}
+                  disabled={isSubmitting || isFetchingCep}
                   className="group relative w-full px-8 py-5 bg-purple-600 hover:bg-purple-700 text-white font-black rounded-2xl overflow-hidden transition-all hover:scale-[1.01] active:scale-[0.99] disabled:opacity-70 disabled:cursor-not-allowed"
                 >
                   <span className="relative z-10 uppercase tracking-wide">
