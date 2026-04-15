@@ -1,19 +1,31 @@
 import { Mail, Lock, LogIn } from "lucide-react";
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
+  const navigate = useNavigate();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    //  Aqui depois vamo conecta com backend
-    console.log("Email:", email);
-    console.log("Senha:", senha);
+    // validação simples
+    if (!email || !senha) {
+      alert("Preencha todos os campos");
+      return;
+    }
 
-    alert("Login enviado ");
+    if (!email.includes("@")) {
+      alert("Digite um email válido");
+      return;
+    }
+
+    //  simulação de login
+    localStorage.setItem("user", JSON.stringify({ email }));
+
+    //  redireciona pro dashboard
+    navigate("/dashboard");
   };
 
   return (
@@ -71,22 +83,24 @@ const Login = () => {
           {/* BOTÃO */}
           <button
             type="submit"
-            className="mt-4 flex items-center justify-center gap-2 bg-purple-600 hover:bg-purple-700 transition-all text-white font-black py-3 rounded-full shadow-lg"
+            className="mt-4 flex items-center justify-center gap-2 bg-gradient-to-r from-cyan-500 to-purple-600 hover:scale-105 transition-all text-white font-black py-3 rounded-full shadow-lg"
           >
             <LogIn size={18} />
             ENTRAR
           </button>
 
-          {/* LINK */}
+          {/* LINKS */}
           <span className="text-center text-xs text-gray-500 mt-2 hover:text-purple-400 cursor-pointer transition">
             Esqueci minha senha
           </span>
+
           <Link
             to="/cadastro"
-            className="text-center text-xs text-gray-500 mt-2 hover:text-purple-400 cursor-pointer transition"
+            className="text-center text-xs text-gray-500 mt-2 hover:text-purple-400 transition"
           >
             Cadastrar-se
           </Link>
+
         </form>
       </div>
     </section>

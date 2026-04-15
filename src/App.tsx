@@ -12,6 +12,7 @@ import TeamSection from "./sections/teamsection";
 
 import Login from "./pages/login";
 import Cadastro from "./pages/cadastro";
+import Dashboard from "./pages/dashboard"; 
 
 // Home
 function Home() {
@@ -29,9 +30,7 @@ function Home() {
   );
 }
 
-
-
-//paginas com rota
+// Rotas
 function App() {
   return (
     <div className="min-h-screen bg-[#020202] text-white font-sans">
@@ -40,6 +39,7 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/cadastro" element={<Cadastro />} />
+          <Route path="/dashboard" element={<Dashboard />} /> 
         </Routes>
       </BrowserRouter>
     </div>
