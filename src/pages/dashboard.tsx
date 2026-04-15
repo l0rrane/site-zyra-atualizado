@@ -108,7 +108,7 @@ const Dashboard = () => {
       <main className="flex-1 p-4 md:p-10">
 
         <div className="mb-6 flex justify-between items-center">
-          <h1 className="text-xl md:text-2xl font-semibold">Dashboard</h1>
+          <h1 className="text-xl md:text-2xl font-semibold">Painel</h1>
 
           <div className="text-xs md:text-sm text-gray-400">
             {user.email}
