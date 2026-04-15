@@ -9,6 +9,10 @@ import FeaturesSection from "./sections/featuressection";
 import AppSection from "./sections/appsection";
 import AboutSection from "./sections/aboutsection";
 import TeamSection from "./sections/teamsection";
+import Faq from "./sections/faq";
+
+
+
 
 import Login from "./pages/login";
 import Cadastro from "./pages/cadastro";
@@ -25,6 +29,7 @@ function Home() {
       <AppSection />
       <AboutSection />
       <TeamSection />
+      <Faq />
       <Footer />
     </>
   );
