@@ -10,9 +10,7 @@ import AppSection from "./sections/appsection";
 import AboutSection from "./sections/aboutsection";
 import TeamSection from "./sections/teamsection";
 import Faq from "./sections/faq";
-
-
-
+import Monitoramento  from "./pages/monitoramento";
 
 import Login from "./pages/login";
 import Cadastro from "./pages/cadastro";
