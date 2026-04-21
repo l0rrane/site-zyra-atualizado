@@ -6,6 +6,7 @@ import MinhaConta from "./MinhaConta";
 import Seguranca from "./Seguranca";
 import Suporte from "./Suporte";
 import LGPD from "./LGPD";
+import Monitoramento from "./monitoramento";
 
 const Dashboard = () => {
   const [aba, setAba] = useState("conta");
@@ -29,15 +30,15 @@ const Dashboard = () => {
       case "seguranca": return <Seguranca />;
       case "suporte": return <Suporte />;
       case "lgpd": return <LGPD />;
+      case "monitoramento": return <Monitoramento />;
       default: return <MinhaConta />;
     }
   };
 
   const getButtonClass = (nome: string) =>
-    `w-full text-left px-4 py-3 rounded-lg transition-all text-sm font-medium ${
-      aba === nome
-        ? "bg-white/10 text-white"
-        : "text-gray-400 hover:text-white hover:bg-white/5"
+    `w-full text-left px-4 py-3 rounded-lg transition-all text-sm font-medium ${aba === nome
+      ? "bg-white/10 text-white"
+      : "text-gray-400 hover:text-white hover:bg-white/5"
     }`;
 
   return (
@@ -57,8 +58,9 @@ const Dashboard = () => {
 
       {/* SIDEBAR */}
       <aside
-        className={`fixed md:static z-50 top-0 left-0 h-screen w-64 bg-[#0f141b] border-r border-white/5 p-6 flex flex-col justify-between transition-transform duration-300
-        ${menuAberto ? "translate-x-0" : "-translate-x-full md:translate-x-0"}`}
+        className={`fixed md:static z-50 top-0 left-0 w-64 bg-[#0f141b] border-r border-white/5 p-6 flex flex-col justify-between transition-transform duration-300
+  h-screen md:h-auto md:self-stretch
+  ${menuAberto ? "translate-x-0" : "-translate-x-full md:translate-x-0"}`}
       >
 
         <div>
@@ -67,6 +69,10 @@ const Dashboard = () => {
           </h2>
 
           <nav className="flex flex-col gap-2">
+
+            <button onClick={() => { setAba("monitoramento"); setMenuAberto(false); }} className={getButtonClass("monitoramento")}>
+              Monitoramento
+            </button>
 
             <button onClick={() => { setAba("conta"); setMenuAberto(false); }} className={getButtonClass("conta")}>
               Minha Conta
