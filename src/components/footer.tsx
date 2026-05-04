@@ -26,7 +26,7 @@ const Footer = () => {
           <div className="flex flex-col items-center gap-4">
             <div className="flex gap-4">
               <a
-                href="#"
+                href="https://www.instagram.com/zyra_systems?igsh=M2U5cmpkNWk2ZnZo"
                 className="w-12 h-12 rounded-xl bg-white/5 flex items-center justify-center hover:bg-purple-600 transition-all border border-white/10"
               >
                 <InstagramIcon size={24} />

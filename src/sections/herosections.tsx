@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { ArrowRight, Database, Wifi } from 'lucide-react';
+import { ArrowRight, Database, Wifi, Droplet, Cpu } from 'lucide-react';
 import { InstagramIcon, TikTokIcon } from "../components/socialicons";
 import { Link } from "react-router-dom";
 
@@ -37,18 +37,19 @@ const HeroSection = () => {
           </p>
 
           <div className="flex flex-col sm:flex-row gap-6 mb-12">
-            <button className="group relative px-10 py-5 bg-white text-black font-black rounded-2xl overflow-hidden transition-all hover:scale-105 active:scale-95">
-              <div className="absolute inset-0 bg-gradient-to-r from-cyan-400 to-purple-500 opacity-0 group-hover:opacity-100 transition-opacity" />
-             <Link to="/login"className="group">
-  <span className="relative z-10 flex items-center justify-center gap-3 group-hover:text-white transition-colors uppercase italic tracking-tighter">
-    Acessar Plataforma{' '}
-    <ArrowRight
-      size={20}
-      className="group-hover:translate-x-1 transition-transform"
-    />
-  </span>
-</Link>
-            </button>
+            <Link to="/login">
+              <button className="group relative px-10 py-5 bg-white text-black font-black rounded-2xl overflow-hidden transition-all hover:scale-105 active:scale-95 cursor-pointer">
+
+                <div className="absolute inset-0 bg-gradient-to-r from-cyan-400 to-purple-500 opacity-0 group-hover:opacity-100 transition-opacity" />
+                <span className="relative z-10 flex items-center justify-center gap-3 group-hover:text-white transition-colors uppercase italic tracking-tighter">
+                  Acessar Plataforma{' '}
+                  <ArrowRight
+                    size={20}
+                    className="group-hover:translate-x-1 transition-transform"
+                  />
+                </span>
+              </button>
+            </Link>
 
             <div className="flex gap-4">
               <a
@@ -118,22 +119,25 @@ const HeroSection = () => {
             }}
             className="relative z-20"
           >
-            <div className="relative w-full aspect-[4/5] max-w-md mx-auto">
+            <div className="relative w-full aspect-[4/5] max-w-md mx-auto flex items-center justify-center">
               <div className="absolute inset-0 bg-gradient-to-tr from-cyan-500/30 via-purple-500/30 to-green-500/30 blur-[100px] rounded-full scale-75 animate-pulse" />
 
-              <div className="relative h-full w-full rounded-[4rem] border border-white/20 bg-gradient-to-b from-white/10 to-transparent backdrop-blur-xl p-8 flex flex-col items-center justify-center overflow-hidden group shadow-2xl">
+              <div className="relative h-[80%] w-full rounded-[100%] to-transparent backdrop-blur-[8px] p-8 flex flex-col items-center justify-center overflow-hidden group shadow-2xl">
                 <div className="absolute inset-0 opacity-10 pointer-events-none">
                   <div className="absolute top-0 left-1/2 w-px h-full bg-gradient-to-b from-cyan-400 to-transparent" />
                   <div className="absolute top-1/2 left-0 w-full h-px bg-gradient-to-r from-transparent via-purple-500 to-transparent" />
                 </div>
 
                 <div className="relative mb-12 flex justify-center">
-                  <div className="absolute inset-0 bg-cyan-400 blur-3xl opacity-20 scale-150" />
 
                   <img
-                    src="/Zyro.jpeg"
+                    src="/Zyro.png"
                     alt="Mascote"
-                    className="w-120 md:w-90 object-contain mx-auto group-hover:scale-110 transition-transform duration-500"
+                    className="w-[115%] md:w-[105%] object-contain 
+             mx-auto
+             translate-y-[2%]
+             drop-shadow-[0_30px_80px_rgba(0,0,0,0.6)]
+             transition-all duration-500 group-hover:scale-110"
                   />
 
                   <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
@@ -147,20 +151,49 @@ const HeroSection = () => {
               <motion.div
                 animate={{ rotate: 360 }}
                 transition={{ duration: 20, repeat: Infinity, ease: 'linear' }}
-                className="absolute inset-0 border-2 border-dashed border-white/5 rounded-full -m-10 pointer-events-none"
+                className="absolute top-1/2 left-1/2
+           w-[110%] aspect-square
+           -translate-x-1/2 -translate-y-1/2
+           inset-0 border-2 border-dashed border-white/10
+           rounded-full pointer-events-none"
+                style={{ transformOrigin: 'center' }}
               >
-                <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-12 h-12 bg-black border border-white/20 rounded-xl flex items-center justify-center text-cyan-400 shadow-xl">
-                  <Wifi size={20} />
+                <div className="absolute top-0 left-1/2 
+                -translate-x-1/2 -translate-y-1/2 
+                w-12 h-12 bg-black/70 border border-white/20 
+                rounded-full flex items-center justify-center 
+                text-cyan-400 shadow-xl">
+                  <Wifi size={18} />
                 </div>
 
-                <div className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 w-12 h-12 bg-black border border-white/20 rounded-xl flex items-center justify-center text-purple-400 shadow-xl">
-                  <Database size={20} />
+                <div className="absolute top-1/2 right-0 
+                translate-x-1/2 -translate-y-1/2 
+                w-12 h-12 bg-black/70 border border-white/20 
+                rounded-full flex items-center justify-center 
+                text-green-400 shadow-xl">
+                  <Droplet size={18} />
+                </div>
+
+                <div className="absolute bottom-0 left-1/2 
+                -translate-x-1/2 translate-y-1/2 
+                w-12 h-12 bg-black/70 border border-white/20 
+                rounded-full flex items-center justify-center 
+                text-purple-400 shadow-xl">
+                  <Database size={18} />
+                </div>
+
+                <div className="absolute top-1/2 left-0 
+                -translate-x-1/2 -translate-y-1/2 
+                w-12 h-12 bg-black/70 border border-white/20 
+                rounded-full flex items-center justify-center 
+                text-yellow-400 shadow-xl">
+                  <Cpu size={18} />
                 </div>
               </motion.div>
             </div>
           </motion.div>
 
-          <div className="absolute -bottom-10 left-1/2 -translate-x-1/2 w-48 h-8 bg-black/50 blur-2xl rounded-full scale-x-150" />
+          <div className="absolute -bottom-10 left-1/2 -translate-x-1/2 w-48 h-8 bg-black/50 blur-2xl rounded-[100%] scale-x-150" />
         </motion.div>
       </div>
     </section>
