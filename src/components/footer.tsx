@@ -50,9 +50,6 @@ const Footer = () => {
               Dúvidas? <span className="text-white">suporte@zyra.com.br</span>
             </div>
 
-            <p className="text-gray-600 text-[10px] mt-4 font-mono">
-              © 2024 ZYRA SYSTEMS INC.
-            </p>
           </div>
         </div>
       </div>
