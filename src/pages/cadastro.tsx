@@ -1,3 +1,4 @@
+
 import { useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import {
@@ -12,6 +13,11 @@ import {
   Building2,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+
+// IMPORTAÇÕES DO FIREBASE (Atualizadas para o Firestore)
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { doc, setDoc } from "firebase/firestore"; 
+import { auth, db } from "../firebase"; 
 
 type Plano = "mensal" | "semestral" | "anual";
 type FormaPagamento = "cartao_credito" | "cartao_debito" | "pix" | "boleto";
@@ -59,15 +65,45 @@ const initialFormData: FormData = {
   complemento: "",
 };
 
+// FUNÇÃO ATUALIZADA PARA INTEGRAR COM O FIRESTORE
 const registerClient = async (payload: FormData): Promise<ApiResponse> => {
-  console.log("Payload enviado para API:", payload);
+  try {
+    // 1. Cria o usuário na Autenticação do Firebase
+    const userCredential = await createUserWithEmailAndPassword(
+      auth,
+      payload.email,
+      payload.senha
+    );
+    const user = userCredential.user;
 
-  await new Promise((resolve) => setTimeout(resolve, 1200));
+    // 2. Remove a senha do objeto para não salvá-la exposta no banco de dados
+    const { senha, ...dadosParaSalvar } = payload;
 
-  return {
-    success: true,
-    message: "Cadastro enviado com sucesso.",
-  };
+    // 3. Salva os dados no Firestore usando o UID do usuário como nome do documento
+    await setDoc(doc(db, "usuarios", user.uid), {
+      ...dadosParaSalvar,
+      dataCadastro: new Date().toISOString(),
+    });
+
+    return {
+      success: true,
+      message: "Cadastro enviado com sucesso.",
+    };
+  } catch (error: any) {
+    console.error("Erro no Firebase:", error);
+    
+    // Tratamento de erros comuns do Firebase
+    let errorMessage = "Erro ao realizar o cadastro. Tente novamente.";
+    if (error.code === "auth/email-already-in-use") {
+      errorMessage = "Este email já está cadastrado no sistema.";
+    } else if (error.code === "auth/invalid-email") {
+      errorMessage = "O email fornecido é inválido.";
+    } else if (error.code === "auth/weak-password") {
+      errorMessage = "A senha fornecida é muito fraca.";
+    }
+    
+    throw new Error(errorMessage);
+  }
 };
 
 const Cadastro = () => {
@@ -671,3 +707,4 @@ const Cadastro = () => {
 };
 
 export default Cadastro;
+

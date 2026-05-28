@@ -1,31 +1,61 @@
+
 import { Mail, Lock, LogIn } from "lucide-react";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
+// IMPORTAÇÕES DO FIREBASE
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../firebase"; // Verifique se o caminho está correto
+
 const Login = () => {
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
+  const [erro, setErro] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setErro(""); // Limpa erros anteriores
+    setIsLoading(true);
 
     // validação simples
     if (!email || !senha) {
-      alert("Preencha todos os campos");
+      setErro("Preencha todos os campos");
+      setIsLoading(false);
       return;
     }
 
     if (!email.includes("@")) {
-      alert("Digite um email válido");
+      setErro("Digite um email válido");
+      setIsLoading(false);
       return;
     }
 
-    //  simulação de login
-    localStorage.setItem("user", JSON.stringify({ email }));
-
-    //  redireciona pro dashboard
-    navigate("/dashboard");
+    try {
+      // Tenta fazer o login no Firebase
+      await signInWithEmailAndPassword(auth, email, senha);
+      
+      // Se der certo, redireciona pro dashboard
+      navigate("/dashboard");
+    } catch (error: any) {
+      console.error("Erro no login:", error);
+      
+      // Tratamento de erros comuns do Firebase
+      if (
+        error.code === "auth/invalid-credential" || 
+        error.code === "auth/user-not-found" || 
+        error.code === "auth/wrong-password"
+      ) {
+        setErro("E-mail ou senha incorretos.");
+      } else if (error.code === "auth/too-many-requests") {
+        setErro("Muitas tentativas falhas. Tente novamente mais tarde.");
+      } else {
+        setErro("Ocorreu um erro ao tentar entrar. Tente novamente.");
+      }
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -34,9 +64,8 @@ const Login = () => {
       className="min-h-screen flex items-center justify-center p-6 bg-gradient-to-br from-black via-gray-900 to-black"
     >
       <div className="w-full max-w-md bg-white/5 border border-white/10 backdrop-blur-sm rounded-[2rem] p-8 shadow-2xl">
-
         {/* TÍTULO */}
-        <h2 className="text-3xl md:text-4xl font-black italic text-center mb-6">
+        <h2 className="text-3xl md:text-4xl font-black italic text-center mb-6 text-white">
           ACESSAR <br />
           <span className="text-purple-500">PLATAFORMA</span>
         </h2>
@@ -47,7 +76,6 @@ const Login = () => {
 
         {/* FORM */}
         <form onSubmit={handleSubmit} className="flex flex-col gap-5">
-
           {/* EMAIL */}
           <div className="relative">
             <Mail
@@ -80,13 +108,21 @@ const Login = () => {
             />
           </div>
 
+          {/* EXIBIÇÃO DE ERRO */}
+          {erro && (
+            <div className="bg-red-500/10 border border-red-500/30 text-red-400 text-sm text-center py-2 rounded-lg">
+              {erro}
+            </div>
+          )}
+
           {/* BOTÃO */}
           <button
             type="submit"
-            className="mt-4 flex items-center justify-center gap-2 bg-gradient-to-r from-cyan-500 to-purple-600 hover:scale-105 transition-all text-white font-black py-3 rounded-full shadow-lg"
+            disabled={isLoading}
+            className="mt-4 flex items-center justify-center gap-2 bg-gradient-to-r from-cyan-500 to-purple-600 hover:scale-105 transition-all text-white font-black py-3 rounded-full shadow-lg disabled:opacity-70 disabled:hover:scale-100 disabled:cursor-not-allowed"
           >
             <LogIn size={18} />
-            ENTRAR
+            {isLoading ? "ENTRANDO..." : "ENTRAR"}
           </button>
 
           {/* LINKS */}
@@ -100,7 +136,6 @@ const Login = () => {
           >
             Cadastrar-se
           </Link>
-
         </form>
       </div>
     </section>
@@ -108,3 +143,4 @@ const Login = () => {
 };
 
 export default Login;
+
