@@ -1,4 +1,5 @@
 
+import { Eye, EyeOff } from "lucide-react";
 import { useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import {
@@ -331,6 +332,8 @@ const Cadastro = () => {
   const getPasswordRuleClass = (isValid: boolean) =>
     isValid ? "text-green-400" : "text-gray-400";
 
+  const [mostrarSenha, setMostrarSenha] = useState(false);
+
   return (
     <section className="relative min-h-screen pt-32 pb-20 overflow-hidden bg-black text-white">
       <div className="absolute top-0 left-1/4 w-[800px] h-[800px] bg-purple-600/10 blur-[120px] rounded-full -translate-y-1/2" />
@@ -388,17 +391,27 @@ const Cadastro = () => {
                 <label className="text-sm text-gray-300 mb-2 block">Senha</label>
                 <div className="flex items-center gap-3 rounded-xl border border-white/10 bg-black/30 px-4">
                   <LockIcon size={18} className="text-cyan-400" />
-                  <input
-                    type="password"
-                    name="senha"
-                    value={formData.senha}
-                    onChange={handleChange}
-                    placeholder="Digite sua senha"
-                    minLength={8}
-                    maxLength={20}
-                    className="w-full bg-transparent py-4 outline-none text-white placeholder:text-gray-500"
-                    required
-                  />
+                  <div className="relative w-full">
+  <input
+    type={mostrarSenha ? "text" : "password"}
+    name="senha"
+    value={formData.senha}
+    onChange={handleChange}
+    placeholder="Digite sua senha"
+    minLength={8}
+    maxLength={20}
+    className="w-full bg-transparent py-4 pr-10 outline-none text-white placeholder:text-gray-500"
+    required
+  />
+
+  <button
+    type="button"
+    onClick={() => setMostrarSenha((prev) => !prev)}
+    className="absolute right-0 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white pr-2"
+  >
+    {mostrarSenha ? <EyeOff size={18} /> : <Eye size={18} />}
+  </button>
+</div>
                 </div>
 
                 <div className="mt-3 space-y-1 text-xs">

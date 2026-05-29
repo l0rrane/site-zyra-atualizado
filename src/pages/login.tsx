@@ -1,4 +1,5 @@
 
+import { Eye, EyeOff } from "lucide-react";
 import { Mail, Lock, LogIn } from "lucide-react";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
@@ -58,6 +59,8 @@ const Login = () => {
     }
   };
 
+    const [mostrarSenha, setMostrarSenha] = useState(false);
+
   return (
     <section
       id="login"
@@ -98,14 +101,24 @@ const Login = () => {
               className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
               size={18}
             />
-            <input
-              type="password"
-              placeholder="Sua senha"
-              value={senha}
-              onChange={(e) => setSenha(e.target.value)}
-              required
-              className="w-full pl-12 pr-4 py-3 rounded-full bg-white/5 border border-white/10 text-white placeholder-gray-500 focus:outline-none focus:border-purple-500 transition-all"
-            />
+            <div className="relative w-full">
+  <input
+    type={mostrarSenha ? "text" : "password"}
+    value={senha}
+    onChange={(e) => setSenha(e.target.value)}
+    placeholder="Digite sua senha"
+    className="w-full pl-12 pr-10 py-3 rounded-full bg-white/5 border border-white/10 text-white placeholder-gray-500 focus:outline-none focus:border-purple-500 transition-all"
+    required
+  />
+
+  <button
+    type="button"
+    onClick={() => setMostrarSenha((prev) => !prev)}
+    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white"
+  >
+    {mostrarSenha ? <EyeOff size={18} /> : <Eye size={18} />}
+  </button>
+</div>
           </div>
 
           {/* EXIBIÇÃO DE ERRO */}
