@@ -25,19 +25,16 @@ import {
   ResponsiveContainer,
 } from "recharts";
 
-import { auth }
-from "../firebase";
+import {
+  auth,
+  realtimeDb,
+} from "../firebase";
 
 import {
-  getDatabase,
   ref,
   onValue,
+  off,
 } from "firebase/database";
-
-// ======================
-
-const db =
-  getDatabase();
 
 // ======================
 
@@ -56,6 +53,19 @@ interface ChartItem {
 
 // ======================
 
+interface CardProps {
+
+  title: string;
+
+  value: number;
+
+  unit: string;
+
+  icon: React.ReactNode;
+}
+
+// ======================
+
 const formatarHora =
 (
   valor: string
@@ -68,15 +78,16 @@ const formatarHora =
 
     const [
       ,
-      hora
+      hora,
     ] =
       valor.split("T");
 
-    return hora
-      ?.slice(
+    return (
+      hora?.slice(
         0,
         5
-      ) || "--:--";
+      ) || "--:--"
+    );
 
   } catch {
 
@@ -86,12 +97,13 @@ const formatarHora =
 
 // ======================
 
-const Card = ({
+const Card =
+({
   title,
   value,
   unit,
   icon,
-}: any) => (
+}: CardProps) => (
 
   <div className="rounded-3xl border border-white/10 bg-[#0b1320] p-5 shadow-lg hover:border-cyan-400/30 transition">
 
@@ -100,7 +112,9 @@ const Card = ({
       <div>
 
         <p className="text-sm text-gray-400">
+
           {title}
+
         </p>
 
         <h2 className="text-3xl font-bold mt-2 text-white">
@@ -108,7 +122,9 @@ const Card = ({
           {value}
 
           <span className="text-base text-gray-400 ml-1">
+
             {unit}
+
           </span>
 
         </h2>
@@ -116,7 +132,9 @@ const Card = ({
       </div>
 
       <div className="text-cyan-400">
+
         {icon}
+
       </div>
 
     </div>
@@ -136,15 +154,18 @@ const TooltipCustom =
   if (
     !active ||
     !payload
-  )
+  ) {
     return null;
+  }
 
   return (
 
     <div className="bg-[#08111c] border border-white/10 rounded-2xl p-4 shadow-xl">
 
       <p className="text-white font-semibold mb-3">
+
         {label}
+
       </p>
 
       {payload.map(
@@ -183,9 +204,16 @@ const Monitoramento =
     atual,
     setAtual,
   ] =
-    useState<any>(
-      {}
-    );
+    useState({
+
+      temperatura: 0,
+
+      umidadeAr: 0,
+
+      umidadeSolo: 0,
+
+      vazao: 0,
+    });
 
   const [
     chartData,
@@ -199,106 +227,170 @@ const Monitoramento =
 
   useEffect(() => {
 
-    const user =
-      auth.currentUser;
+    let atualRef: any;
 
-    if (!user)
-      return;
+    let historicoRef: any;
 
-    const atualRef =
-      ref(
-        db,
-        `usuarios/${user.uid}/sensores/atual`
-      );
+    const unsubscribe =
+      auth.onAuthStateChanged(
+        (
+          user
+        ) => {
 
-    const historicoRef =
-      ref(
-        db,
-        `usuarios/${user.uid}/sensores/historico`
-      );
+          if (!user)
+            return;
 
-    onValue(
-      atualRef,
-      (
-        snapshot
-      ) => {
-
-        const data =
-          snapshot.val();
-
-        if (!data)
-          return;
-
-        setAtual(
-          data
-        );
-      }
-    );
-
-    onValue(
-      historicoRef,
-      (
-        snapshot
-      ) => {
-
-        const data =
-          snapshot.val();
-
-        if (!data)
-          return;
-
-        const lista =
-          Object
-            .values(
-              data
-            )
-
-            .sort(
-              (
-                a: any,
-                b: any
-              ) =>
-
-                String(
-                  a.hora
-                ).localeCompare(
-                  String(
-                    b.hora
-                  )
-                )
-            )
-
-            .slice(-12)
-
-            .map(
-              (
-                item: any
-              ) => ({
-
-                hora:
-                  formatarHora(
-                    item.hora
-                  ),
-
-                temperatura:
-                  item.temperatura || 0,
-
-                umidadeAr:
-                  item.umidadeAr || 0,
-
-                umidadeSolo:
-                  item.umidadeSolo || 0,
-
-                vazao:
-                  item.vazao || 0,
-              })
+          atualRef =
+            ref(
+              realtimeDb,
+              `usuarios/${user.uid}/sensores/atual`
             );
 
-        setChartData(
-          lista
+          historicoRef =
+            ref(
+              realtimeDb,
+              `usuarios/${user.uid}/sensores/historico`
+            );
+
+// ======================
+// atual
+// ======================
+
+          onValue(
+            atualRef,
+            (
+              snapshot
+            ) => {
+
+              const data =
+                snapshot.val();
+
+              if (
+                !data
+              )
+                return;
+
+              setAtual({
+
+                temperatura:
+                  data.temperatura || 0,
+
+                umidadeAr:
+                  data.umidadeAr || 0,
+
+                umidadeSolo:
+                  data.umidadeSolo || 0,
+
+                vazao:
+                  data.vazao || 0,
+              });
+            }
+          );
+
+// ======================
+// histórico
+// ======================
+
+          onValue(
+            historicoRef,
+            (
+              snapshot
+            ) => {
+
+              const data =
+                snapshot.val();
+
+              if (
+                !data
+              ) {
+                setChartData(
+                  []
+                );
+
+                return;
+              }
+
+              const lista =
+                Object
+                  .values(
+                    data
+                  )
+
+                  .sort(
+                    (
+                      a: any,
+                      b: any
+                    ) =>
+
+                      String(
+                        a.hora
+                      ).localeCompare(
+                        String(
+                          b.hora
+                        )
+                      )
+                  )
+
+                  .slice(
+                    -12
+                  )
+
+                  .map(
+                    (
+                      item: any
+                    ) => ({
+
+                      hora:
+                        formatarHora(
+                          item.hora
+                        ),
+
+                      temperatura:
+                        item.temperatura || 0,
+
+                      umidadeAr:
+                        item.umidadeAr || 0,
+
+                      umidadeSolo:
+                        item.umidadeSolo || 0,
+
+                      vazao:
+                        item.vazao || 0,
+                    })
+                  );
+
+              setChartData(
+                lista
+              );
+            }
+          );
+        }
+      );
+
+// cleanup
+
+    return () => {
+
+      unsubscribe();
+
+      if (
+        atualRef
+      ) {
+
+        off(
+          atualRef
         );
       }
-    );
+
+      if (
+        historicoRef
+      ) {
+
+        off(
+          historicoRef
+        );
+      }
+    };
 
   }, []);
 
@@ -308,7 +400,7 @@ const Monitoramento =
 
     <section className="text-white space-y-8">
 
-      {/* topo */}
+{/* topo */}
 
       <div>
 
@@ -326,41 +418,49 @@ const Monitoramento =
 
       </div>
 
-      {/* cards */}
+{/* cards */}
 
       <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-5">
 
         <Card
           title="Temperatura"
-          value={atual.temperatura || 0}
+          value={atual.temperatura}
           unit="°C"
-          icon={<Thermometer />}
+          icon={
+            <Thermometer />
+          }
         />
 
         <Card
           title="Umidade Ar"
-          value={atual.umidadeAr || 0}
+          value={atual.umidadeAr}
           unit="%"
-          icon={<Droplets />}
+          icon={
+            <Droplets />
+          }
         />
 
         <Card
           title="Solo"
-          value={atual.umidadeSolo || 0}
+          value={atual.umidadeSolo}
           unit="%"
-          icon={<Sprout />}
+          icon={
+            <Sprout />
+          }
         />
 
         <Card
           title="Vazão"
-          value={atual.vazao || 0}
+          value={atual.vazao}
           unit="L/min"
-          icon={<Waves />}
+          icon={
+            <Waves />
+          }
         />
 
       </div>
 
-      {/* charts */}
+{/* gráficos */}
 
       <div className="grid xl:grid-cols-2 gap-6">
 
@@ -378,7 +478,9 @@ const Monitoramento =
           >
 
             <LineChart
-              data={chartData}
+              data={
+                chartData
+              }
             >
 
               <CartesianGrid
@@ -433,7 +535,9 @@ const Monitoramento =
           >
 
             <AreaChart
-              data={chartData}
+              data={
+                chartData
+              }
             >
 
               <CartesianGrid
@@ -467,7 +571,7 @@ const Monitoramento =
 
       </div>
 
-      {/* histórico */}
+{/* histórico */}
 
       <div className="rounded-3xl bg-[#08111c] border border-white/10 p-6">
 
@@ -495,23 +599,33 @@ const Monitoramento =
               <tr className="text-gray-400 border-b border-white/10">
 
                 <th className="text-left py-3">
+
                   Hora
+
                 </th>
 
                 <th>
+
                   Temp
+
                 </th>
 
                 <th>
+
                   Ar
+
                 </th>
 
                 <th>
+
                   Solo
+
                 </th>
 
                 <th>
+
                   Vazão
+
                 </th>
 
               </tr>
@@ -535,23 +649,33 @@ const Monitoramento =
                     >
 
                       <td className="text-left py-3">
+
                         {item.hora}
+
                       </td>
 
                       <td>
+
                         {item.temperatura}°C
+
                       </td>
 
                       <td>
+
                         {item.umidadeAr}%
+
                       </td>
 
                       <td>
+
                         {item.umidadeSolo}%
+
                       </td>
 
                       <td>
+
                         {item.vazao}
+
                       </td>
 
                     </tr>
@@ -566,7 +690,7 @@ const Monitoramento =
 
       </div>
 
-      {/* resumo */}
+{/* rodapé */}
 
       <div className="rounded-3xl bg-[#08111c] border border-white/10 p-6">
 
@@ -576,10 +700,10 @@ const Monitoramento =
 
           <p className="text-gray-300">
 
-            Sistema sincronizado com ESP32
-            + Firebase.
+            Sistema sincronizado com ESP32 +
+            Firebase.
             Leituras automáticas a cada
-            10 minutos e histórico salvo
+            10 minutos com histórico salvo
             em tempo real.
 
           </p>
