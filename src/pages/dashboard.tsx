@@ -97,9 +97,26 @@ const Dashboard = () => {
 
       {/* SIDEBAR */}
       <aside
-        className={`fixed md:static z-50 top-0 left-0 w-64 bg-[#0f141b] border-r border-white/5 p-6 flex flex-col justify-between transition-transform duration-300
-        h-screen md:h-auto md:self-stretch
-        ${menuAberto ? "translate-x-0" : "-translate-x-full md:translate-x-0"}`}
+  className={`
+    fixed md:static
+    z-50
+    top-0
+    left-0
+    w-[85%]
+    max-w-64
+    bg-[#0f141b]
+    border-r border-white/5
+    p-6
+    flex flex-col justify-between
+    transition-transform duration-300
+    h-screen md:h-auto md:self-stretch
+    ${
+      menuAberto
+        ? "translate-x-0"
+        : "-translate-x-full md:translate-x-0"
+    }
+  `}
+
       >
         <div>
           <h2 className="text-xl font-semibold mb-10">
@@ -130,11 +147,40 @@ const Dashboard = () => {
 
           {/* BOTÃO DA API ZYRA MONITORA */}
           <button
-            onClick={handleZyraMonitora}
-            className="mt-8 w-full bg-gradient-to-r from-cyan-500 to-purple-600 hover:scale-[1.02] active:scale-[0.98] transition-all text-white font-bold py-3 px-4 rounded-xl shadow-lg shadow-purple-500/20 text-sm uppercase tracking-wide"
-          >
-            Zyra Monitora
-          </button>
+  onClick={() => {
+    handleZyraMonitora();
+    setMenuAberto(false);
+  }}
+  className="
+    mt-6
+    w-full
+    bg-gradient-to-r
+    from-cyan-500
+    to-purple-600
+    hover:scale-[1.02]
+    active:scale-[0.98]
+    transition-all
+    text-white
+    font-bold
+    py-3
+    px-4
+    rounded-xl
+    shadow-lg
+    shadow-purple-500/20
+
+    text-xs
+    sm:text-sm
+
+    uppercase
+    tracking-wide
+
+    flex
+    items-center
+    justify-center
+  "
+>
+  Zyra Monitora
+</button>
 
         </div>
 

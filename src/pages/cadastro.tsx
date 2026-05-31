@@ -110,6 +110,7 @@ const registerClient = async (payload: FormData): Promise<ApiResponse> => {
 const Cadastro = () => {
   const navigate = useNavigate();
 
+  const [mostrarSenha, setMostrarSenha] = useState(false);
   const [formData, setFormData] = useState<FormData>(initialFormData);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isFetchingCep, setIsFetchingCep] = useState(false);
@@ -331,8 +332,6 @@ const Cadastro = () => {
 
   const getPasswordRuleClass = (isValid: boolean) =>
     isValid ? "text-green-400" : "text-gray-400";
-
-  const [mostrarSenha, setMostrarSenha] = useState(false);
 
   return (
     <section className="relative min-h-screen pt-32 pb-20 overflow-hidden bg-black text-white">
