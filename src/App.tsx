@@ -11,9 +11,11 @@ import AboutSection from "./sections/aboutsection";
 import TeamSection from "./sections/teamsection";
 import Faq from "./sections/faq";
 
+
 import Login from "./pages/login";
 import Cadastro from "./pages/cadastro";
 import Dashboard from "./pages/dashboard"; 
+import RecuperarSenha from "./pages/RecuperarSenha";
 
 // Home
 function Home() {
@@ -26,7 +28,7 @@ function Home() {
       <AppSection />
       <AboutSection />
       <TeamSection />
-      <Faq />   
+      <Faq />
       <Footer />
     </>
   );
@@ -42,6 +44,8 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/cadastro" element={<Cadastro />} />
           <Route path="/dashboard" element={<Dashboard />} /> 
+          <Route path="/recuperar-senha" element={<RecuperarSenha />} /> 
+
         </Routes>
       </BrowserRouter>
     </div>
