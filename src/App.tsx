@@ -10,13 +10,10 @@ import AppSection from "./sections/appsection";
 import AboutSection from "./sections/aboutsection";
 import TeamSection from "./sections/teamsection";
 import Faq from "./sections/faq";
-import Monitoramento  from "./pages/monitoramento";
 
 import Login from "./pages/login";
 import Cadastro from "./pages/cadastro";
 import Dashboard from "./pages/dashboard"; 
-// 1. IMPORTAÇÃO DA NOVA PÁGINA AQUI
-import RecuperarSenha from "./pages/RecuperarSenha"; 
 
 // Home
 function Home() {
@@ -29,7 +26,7 @@ function Home() {
       <AppSection />
       <AboutSection />
       <TeamSection />
-      <Faq />
+      <Faq />   
       <Footer />
     </>
   );
@@ -45,8 +42,6 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/cadastro" element={<Cadastro />} />
           <Route path="/dashboard" element={<Dashboard />} /> 
-          {/* 2. ROTA DE RECUPERAÇÃO ADICIONADA AQUI */}
-          <Route path="/recuperar-senha" element={<RecuperarSenha />} />
         </Routes>
       </BrowserRouter>
     </div>
