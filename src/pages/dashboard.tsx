@@ -14,7 +14,7 @@ import LGPD from "./LGPD";
 import Monitoramento from "./monitoramento";
 
 const Dashboard = () => {
-  const [aba, setAba] = useState("conta");
+  const [aba, setAba] = useState("monitoramento");
   const [menuAberto, setMenuAberto] = useState(false);
   
   // Estados para gerenciar o usuário logado via Firebase
