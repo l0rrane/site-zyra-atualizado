@@ -22,8 +22,7 @@ const RecuperarSenha = () => {
     }
 
     try {
-      // CONEXÃO COM SUA API:
-      // Troque "http://localhost:3000" pela URL do seu back-end quando for para produção (ex: Vercel)
+      // Bate na sua API interna da Vercel (Back-end)
       const response = await fetch("/api/recuperar-senha", {
         method: "POST",
         headers: {
@@ -54,6 +53,7 @@ const RecuperarSenha = () => {
   return (
     <section className="min-h-screen flex items-center justify-center p-6 bg-gradient-to-br from-black via-gray-900 to-black relative overflow-hidden">
       
+      {/* Efeitos de Fundo */}
       <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-purple-600/10 blur-[100px] rounded-full -translate-y-1/2 pointer-events-none" />
       <div className="absolute bottom-0 right-1/4 w-[500px] h-[500px] bg-cyan-600/10 blur-[100px] rounded-full translate-y-1/2 pointer-events-none" />
 
@@ -80,6 +80,7 @@ const RecuperarSenha = () => {
           </p>
         </div>
 
+        {/* Alertas com Animação */}
         <AnimatePresence>
           {(mensagemSucesso || mensagemErro) && (
             <motion.div
