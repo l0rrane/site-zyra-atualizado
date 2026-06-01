@@ -7,11 +7,12 @@ import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../firebase"; // Verifique se o caminho está correto
 
 const Login = () => {
+
+  const [mostrarSenha, setMostrarSenha] = useState(false);
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
   const [erro, setErro] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [mostrarSenha, setMostrarSenha] = useState(false);
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
