@@ -22,7 +22,7 @@ const TeamSection = () => {
             <div className="bg-white/5 border border-white/10 rounded-[2rem] p-6 backdrop-blur-sm hover:border-cyan-400/30 transition-all">
               <div className="w-24 h-24 mx-auto mb-5 rounded-full overflow-hidden border-2 border-cyan-400/30 bg-white/5 flex items-center justify-center">
                 <span className="text-xs text-gray-500 font-bold uppercase">
-                  Foto
+                  <img src='henrique.jpeg'/>
                 </span>
               </div>
 
@@ -43,7 +43,7 @@ const TeamSection = () => {
             <div className="bg-white/5 border border-white/10 rounded-[2rem] p-6 backdrop-blur-sm hover:border-purple-400/30 transition-all">
               <div className="w-24 h-24 mx-auto mb-5 rounded-full overflow-hidden border-2 border-purple-400/30 bg-white/5 flex items-center justify-center">
                 <span className="text-xs text-gray-500 font-bold uppercase">
-                  Foto
+                  <img src='ester.jpeg'/>
                 </span>
               </div>
 
@@ -69,7 +69,7 @@ const TeamSection = () => {
             <div className="bg-white/5 border border-white/10 rounded-[2rem] p-6 backdrop-blur-sm hover:border-pink-400/30 transition-all">
               <div className="w-24 h-24 mx-auto mb-5 rounded-full overflow-hidden border-2 border-pink-400/30 bg-white/5 flex items-center justify-center">
                 <span className="text-xs text-gray-500 font-bold uppercase">
-                  Foto
+                  <img src='gabi.jpeg'/>
                 </span>
               </div>
 
@@ -95,7 +95,7 @@ const TeamSection = () => {
             <div className="bg-white/5 border border-white/10 rounded-[2rem] p-6 backdrop-blur-sm hover:border-red-400/30 transition-all">
               <div className="w-24 h-24 mx-auto mb-5 rounded-full overflow-hidden border-2 border-red-400/30 bg-white/5 flex items-center justify-center">
                 <span className="text-xs text-gray-500 font-bold uppercase">
-                  Foto
+                  <img src='tayla.jpeg'/>
                 </span>
               </div>
 
