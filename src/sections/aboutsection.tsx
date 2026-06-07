@@ -3,11 +3,6 @@ import { Clock, Globe, Target } from 'lucide-react';
 const AboutSection = () => {
   return (
     <section id="about" className="py-24 overflow-hidden p-8 md:p-20">
-      <div className="absolute top-0 right-0 p-12 opacity-5 pointer-events-none">
-        <div className="text-[10rem] md:text-[12rem] font-black leading-none italic">
-          WHO
-        </div>
-      </div>
 
       <div className="relative z-10">
         <div className="max-w-3xl mb-16">

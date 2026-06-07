@@ -10,9 +10,8 @@ const TeamSection = () => {
       <div className="relative z-10">
         <div className="max-w-3xl mb-16">
           <h2 className="text-4xl md:text-6xl font-black mb-8 italic leading-tight">
-            ESTRUTURA <br />
-            <span className="text-purple-500">DA EQUIPE.</span>
-          </h2>
+        NOSSA <span className="text-purple-500">EQUIPE</span>
+      </h2>
 
         </div>
 
